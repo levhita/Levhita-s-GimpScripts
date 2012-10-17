@@ -1,8 +1,8 @@
 ;
-; Reduce Frames in Animation
+; Loop Frames in an Animation
 ;
-; Takes Odd or Even layers in document and delete them, to be used in animations
-; to reduce the animation frames.
+; Takes the frames in the animation and loop them reversing the frames through
+; the other side.
 ;
 ; Argel Arias (levhita@gmail.com)
 ; http://blog.levhita.net
@@ -26,9 +26,8 @@
 
 ; Define the function:
 
-(define (script-fu-reduce-frames	inImage
+(define (script-fu-loop-frames	inImage
 				inLayer
-				inOdd
 				inCopy
 	)
 	(let* (
@@ -54,21 +53,11 @@
 		
     (set! layerList (cadr (gimp-image-get-layers theImage)))
 		(set! number_of_layers (vector-length layerList))
-		(set! layerId 0)
+		(set! layerId 1)
 
-		(while (< layerId number_of_layers) ; scan through all the layers
+		(while ( < layerId (- number_of_layers 1)) ; scan through all the layers
 		  (begin   
-          (if (= inOdd FALSE)
-            
-            (if (= (modulo layerId 2)  0);Even
-				      (gimp-image-remove-layer theImage (aref layerList layerId));Delete Layer
-            )
-            
-            (if (= (modulo (+ layerId 1) 2)  0);Odd
-				      (gimp-image-remove-layer theImage (aref layerList layerId));Delete Layer
-            )
-         )
-		    
+		    (levhita-duplicate-layer theImage (aref layerList layerId) TRUE);Delete Layer
 		    (set! layerId (+ layerId 1))
 		  )
 		)
@@ -90,9 +79,16 @@
 	)
 )
 
+;Function that duplicates a layer
+(define (levhita-duplicate-layer image layer)
+	(let* ((dup-layer (car (gimp-layer-copy layer 1))))
+              (gimp-image-add-layer image dup-layer 0)
+	      dup-layer)
+)
+
 ;Register function on Gimp
-(script-fu-register "script-fu-reduce-frames"
-		    _"_Reduce Frames in Animation..."
+(script-fu-register "script-fu-loop-frames"
+		    _"_Loop Frames in Animation..."
 		    "Deletes every given frame of the animation"
 		    "Argel Arias"
 		    "2012 at HackerGarage"
@@ -100,10 +96,9 @@
 		    "RGB* GRAY*"
 		    SF-IMAGE       "The image"	    		0
 		    SF-DRAWABLE    "The layer"    			0
-		    SF-TOGGLE     _"Delete Odd Frames"	TRUE
 		    SF-TOGGLE     _"Work on copy"       FALSE
 )
 
 ;Register function on menu structure
-(script-fu-menu-register "script-fu-reduce-frames"
+(script-fu-menu-register "script-fu-loop-frames"
 			 _"<Image>/Filters/Animation")

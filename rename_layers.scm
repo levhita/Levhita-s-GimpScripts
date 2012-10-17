@@ -92,13 +92,6 @@
 	)
 )
 
-;Function that duplicates a layer
-(define (levhita-duplicate-layer image layer)
-	(let* ((dup-layer (car (gimp-layer-copy layer 1))))
-              (gimp-image-add-layer image dup-layer 0)
-	      dup-layer)
-)
-
 ;Register function on Gimp
 (script-fu-register "script-fu-rename-layers"
 		    _"_Rename Layers to Animation style..."
