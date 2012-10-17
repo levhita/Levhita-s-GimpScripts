@@ -1,8 +1,8 @@
 ;
-; Rename Layers to Animation
+; Reduce Frames in Animation
 ;
-; Takes all the layers of the image and rename them to animation friendly format
-; soo edition is simplified to just edit the text
+; Takes Odd or Even layers in document and delete them, to be used in animations
+; to reduce the animation frames.
 ;
 ; Argel Arias (levhita@gmail.com)
 ; http://blog.levhita.net
