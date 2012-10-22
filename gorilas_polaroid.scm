@@ -27,53 +27,53 @@
 ; Define the function:
 
 (define (script-fu-gorilas-polaroid	inImage
-				inLayer
-				inBorderSize
-				inBottomBorderSize
-				inPolaroidColor
-				inOffsetX
-				inOffsetY
-				inDropShadowRadius
-				inShadowColor
-				inShadowOpacity
-				inCopy
-				inFlatten
-				inBackgroundColor
+	inLayer
+	inBorderSize
+	inBottomBorderSize
+	inPolaroidColor
+	inOffsetX
+	inOffsetY
+	inDropShadowRadius
+	inShadowColor
+	inShadowOpacity
+	inCopy
+	inFlatten
+	inBackgroundColor
 	)
-	(let* (
-		(theImage 0)
-		(thePicture 0)
-		(thePolaroidLayer 0)
-		(theShadowLayer 0)
-		(theBackgroundLayer 0)
-		(polaroidWidth 0)
-		(polaroidHeight 0)
-		(theWidth 0)
-		(theHeight 0)
-		(thePictureBorder 0)
-		(fullWidth 0)
-		(fullHeight 0)
-		(realXOffset 0)
-		(realYOffset 0)
-		)
-	
-		(gimp-selection-all inImage)
-		(set! theImage (if (= inCopy TRUE)
-				   (car (gimp-image-duplicate inImage))
-						   inImage)
-			)
-		
+(let* (
+	(theImage 0)
+	(thePicture 0)
+	(thePolaroidLayer 0)
+	(theShadowLayer 0)
+	(theBackgroundLayer 0)
+	(polaroidWidth 0)
+	(polaroidHeight 0)
+	(theWidth 0)
+	(theHeight 0)
+	(thePictureBorder 0)
+	(fullWidth 0)
+	(fullHeight 0)
+	(realXOffset 0)
+	(realYOffset 0)
+	)
+
+(gimp-selection-all inImage)
+(set! theImage (if (= inCopy TRUE)
+	(car (gimp-image-duplicate inImage))
+	inImage)
+)
+
 		;Starts the undo queque
 		(if 	(= inCopy FALSE)	
 			(gimp-undo-push-group-start theImage)	
 			()
-		)
+			)
 		(gimp-selection-none theImage)
 		;Convert to RGB
 		(if 	(> 	(car (gimp-drawable-type inLayer))
-						1
-					)
-			(gimp-image-convert-rgb theImage)
+			1
+			)
+		(gimp-image-convert-rgb theImage)
 		)
 		
 		;Picture Layer
@@ -81,8 +81,8 @@
 			(levhita-duplicate-layer
 				theImage
 				(car (gimp-image-get-active-drawable theImage))
+				)
 			)
-		)
 		(gimp-drawable-set-name thePicture "picture")
 		
 		(set! theWidth (car (gimp-image-width inImage)))
@@ -94,28 +94,28 @@
 		(gimp-image-resize theImage
 			polaroidWidth polaroidHeight
 			(/ inBorderSize 2) (/ inBorderSize 2)
-		)
+			)
 		(set! thePolaroidLayer (car (gimp-layer-new theImage
-							polaroidWidth
-							polaroidHeight
-							RGBA-IMAGE
-							"polaroid"
-							100
-							NORMAL-MODE
-		) ) )	
+			polaroidWidth
+			polaroidHeight
+			RGBA-IMAGE
+			"polaroid"
+			100
+			NORMAL-MODE
+			) ) )	
 		(gimp-image-add-layer theImage thePolaroidLayer 0)
 		(gimp-context-set-background inPolaroidColor)	
 		(gimp-drawable-fill thePolaroidLayer BACKGROUND-FILL)
 
 		;Polaroid Shadow Layer (number 1)
 		(set! theShadowLayer (car (gimp-layer-new theImage
-							polaroidWidth
-							polaroidHeight
-							RGBA-IMAGE
-							"shadow"
-							inShadowOpacity
-							NORMAL-MODE
-		) ) )	
+			polaroidWidth
+			polaroidHeight
+			RGBA-IMAGE
+			"shadow"
+			inShadowOpacity
+			NORMAL-MODE
+			) ) )	
 		(gimp-image-add-layer theImage theShadowLayer 0)
 		(gimp-context-set-background inShadowColor)	
 		(gimp-drawable-fill theShadowLayer BACKGROUND-FILL)
@@ -131,37 +131,37 @@
 		(if 	(< inDropShadowRadius inOffsetX) ;X offset bigger than shadow
 			(begin	(set! fullWidth(+ inOffsetX (+ inDropShadowRadius polaroidWidth)))
 				(set! realXOffset 0)
-			)
+				)
 			(begin 	(set! fullWidth (+ polaroidWidth (* inDropShadowRadius 2)))
 				(set! realXOffset (- inDropShadowRadius inOffsetX))
+				)
 			)
-		)
 		(if 	(< inDropShadowRadius inOffsetY) ;X offset bigger than shadow
 			(begin	(set! fullHeight(+ inOffsetY (+ inDropShadowRadius polaroidHeight)))
 				(set! realYOffset 0)
-			)
+				)
 			(begin	(set! fullHeight (+ polaroidHeight (* inDropShadowRadius 2)))	
 				(set! realYOffset (- inDropShadowRadius inOffsetY))
-			)
-		)	
+				)
+			)	
 		(gimp-image-resize theImage fullWidth fullHeight realXOffset realYOffset)
 
 		;Background Layer
 		(if 	(= inFlatten TRUE)
 			(begin 	(set! theBackgroundLayer (car (gimp-layer-new theImage
-								fullWidth
-								fullHeight
-								RGBA-IMAGE
-								"background"
-								100
-								NORMAL-MODE
+				fullWidth
+				fullHeight
+				RGBA-IMAGE
+				"background"
+				100
+				NORMAL-MODE
 				) ) )	
-				(gimp-image-add-layer theImage theBackgroundLayer 0)
-				(gimp-context-set-background inBackgroundColor)	
-				(gimp-drawable-fill theBackgroundLayer BACKGROUND-FILL)	
-			 )
+			(gimp-image-add-layer theImage theBackgroundLayer 0)
+			(gimp-context-set-background inBackgroundColor)	
+			(gimp-drawable-fill theBackgroundLayer BACKGROUND-FILL)	
+			)
 			()
-		)
+			)
 		
 		;Polaroid Shadow Layer (number 2)	
 		(gimp-layer-resize-to-image-size theShadowLayer)
@@ -178,54 +178,54 @@
 		(if 	(= inFlatten TRUE)
 			(gimp-image-flatten theImage)
 			()
-		)	
+			)	
 		;Final Cleanup
 		(if 	(= inCopy TRUE)
 			(begin 	(gimp-image-clean-all theImage)
 				(gimp-display-new theImage)
-			)
+				)
 			()
-		)
+			)
 		
 		;Ends the undo queque
 		(if 	(= inCopy FALSE)	
 			(gimp-undo-push-group-end theImage)	
 			()
-		)
+			)
 		(gimp-displays-flush)
-	)
+		)
 )
 
 ;Function that duplicates a layer
 (define (levhita-duplicate-layer image layer)
 	(let* ((dup-layer (car (gimp-layer-copy layer 1))))
-              (gimp-image-add-layer image dup-layer 0)
-	      dup-layer)
-)
+		(gimp-image-add-layer image dup-layer 0)
+		dup-layer)
+	)
 
 ;Register function on Gimp
 (script-fu-register "script-fu-gorilas-polaroid"
-		    _"_Gorilas Polaroid 2..."
-		    "Do a polaroid style image like the one seen in el hombre que comia diccionarios http://www.elhombrequecomiadiccionarios.com/una-de-mis-semanas-favoritas-del-ano/"
-		    "Argel Arias"
-		    "2007 at Magallanes TI"
-		    "March 10 2007"
-		    "RGB* GRAY*"
-		    SF-IMAGE       "The image"              0
-		    SF-DRAWABLE    "The layer"              0
-		    SF-ADJUSTMENT _"Border size"  '(30 0 300 1 10 0 1)
-		    SF-ADJUSTMENT _"Bottom border size"  '(50 0 300 1 10 0 1)
-		    SF-COLOR      _"Polaroid Color"         '(242 242 242)
-		    SF-ADJUSTMENT _"Shadow X offset" '(2 0 4096 1 10 0 1)
-		    SF-ADJUSTMENT _"Shadow Y offset" '(2 0 4096 1 10 0 1)
-		    SF-ADJUSTMENT _"Blur radius"     '(7 0 1024 1 10 0 1)
-		    SF-COLOR      _"Color"          '(0 0 0)
-		    SF-ADJUSTMENT _"Opacity"        '(80 0 100 1 10 0 0)
-		    SF-TOGGLE     _"Work on copy" 	TRUE		    
-		    SF-TOGGLE     _"Flatten image"      FALSE
-		    SF-COLOR      _"Background Color"        '(255 255 255)
-)
+	_"_Gorilas Polaroid 2..."
+	"Do a polaroid style image like the one seen in el hombre que comia diccionarios http://www.elhombrequecomiadiccionarios.com/una-de-mis-semanas-favoritas-del-ano/"
+	"Argel Arias"
+	"2007 at Magallanes TI"
+	"March 10 2007"
+	"RGB* GRAY*"
+	SF-IMAGE       "The image"              0
+	SF-DRAWABLE    "The layer"              0
+	SF-ADJUSTMENT _"Border size"  '(30 0 300 1 10 0 1)
+	SF-ADJUSTMENT _"Bottom border size"  '(50 0 300 1 10 0 1)
+	SF-COLOR      _"Polaroid Color"         '(242 242 242)
+	SF-ADJUSTMENT _"Shadow X offset" '(2 0 4096 1 10 0 1)
+	SF-ADJUSTMENT _"Shadow Y offset" '(2 0 4096 1 10 0 1)
+	SF-ADJUSTMENT _"Blur radius"     '(7 0 1024 1 10 0 1)
+	SF-COLOR      _"Color"          '(0 0 0)
+	SF-ADJUSTMENT _"Opacity"        '(80 0 100 1 10 0 0)
+	SF-TOGGLE     _"Work on copy" 	TRUE		    
+	SF-TOGGLE     _"Flatten image"      FALSE
+	SF-COLOR      _"Background Color"        '(255 255 255)
+	)
 
 ;Register function on menu structure
 (script-fu-menu-register "script-fu-gorilas-polaroid"
-			 _"<Image>/Script-Fu/Decor")
+	_"<Image>/Script-Fu/Decor")

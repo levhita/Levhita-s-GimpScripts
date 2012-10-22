@@ -90,7 +90,7 @@
 ;Register function on Gimp
 (script-fu-register "script-fu-loop-frames"
 	_"_Loop Frames in Animation..."
-	"Deletes every given frame of the animation"
+	"Takes the frames in the animation and loop them reversing the frames through the other side."
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
@@ -102,4 +102,4 @@
 
 ;Register function on menu structure
 (script-fu-menu-register "script-fu-loop-frames"
-	_"<Image>/Filters/Animation")
+	_"<Image>/Levhita")

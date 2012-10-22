@@ -24,8 +24,8 @@
 ; Version 0.01
 ; 
 
+;TODO: make sure the duplicated layer is visible so the merge doesn't fail
 ; Define the function:
-
 (define (script-fu-merge-layer-on-frames inImage
 	inLayer
 	inOnlyVisible
@@ -88,9 +88,9 @@
 							)
 						)
 					)
-    			(set! layerId (+ layerId 1))
-    			)
-    		)
+(set! layerId (+ layerId 1))
+)
+)
 
 		;Final Cleanup
 		(if 	(= inCopy TRUE)
