@@ -27,78 +27,79 @@
 ; Define the function:
 
 (define (script-fu-loop-frames	inImage
-				inLayer
-				inCopy
+	inLayer
+	inCopy
 	)
-	(let* (
-		(theImage 0)
-		(theMethod 0)
-		(layerId 0)
-		(layerList 0)
-		(number_of_layers 0)
+(let* (
+	(theImage 0)
+	(theMethod 0)
+	(layerId 0)
+	(layerList 0)
+	(number_of_layers 0)
+	)
+
+(set! theImage
+	(if (= inCopy TRUE)
+		(car (gimp-image-duplicate inImage))
+		inImage
 		)
-	
-		(gimp-selection-all inImage)
-		(set! theImage (if (= inCopy TRUE)
-				   (car (gimp-image-duplicate inImage))
-						   inImage)
-			)
-		
+	)
+
 		;Starts the undo queque
-		(if 	(= inCopy FALSE)	
+		(if (= inCopy FALSE)	
 			(gimp-undo-push-group-start theImage)	
 			()
-		)
-		(gimp-selection-none theImage)
+			)
 		
-    (set! layerList (cadr (gimp-image-get-layers theImage)))
+		
+		(set! layerList (cadr (gimp-image-get-layers theImage)))
 		(set! number_of_layers (vector-length layerList))
 		(set! layerId 1)
 
 		(while ( < layerId (- number_of_layers 1)) ; scan through all the layers
-		  (begin   
+			(begin   
 		    (levhita-duplicate-layer theImage (aref layerList layerId) TRUE);Delete Layer
 		    (set! layerId (+ layerId 1))
-		  )
-		)
+		    )
+			)
 
 		;Final Cleanup
 		(if 	(= inCopy TRUE)
 			(begin 	(gimp-image-clean-all theImage)
 				(gimp-display-new theImage)
-			)
+				)
 			()
-		)
+			)
 		
 		;Ends the undo queque
 		(if 	(= inCopy FALSE)	
 			(gimp-undo-push-group-end theImage)	
 			()
-		)
+			)
 		(gimp-displays-flush)
-	)
+		)
 )
 
 ;Function that duplicates a layer
 (define (levhita-duplicate-layer image layer)
 	(let* ((dup-layer (car (gimp-layer-copy layer 1))))
-              (gimp-image-add-layer image dup-layer 0)
-	      dup-layer)
-)
+		(gimp-image-add-layer image dup-layer 0)
+		dup-layer)
+	)
 
 ;Register function on Gimp
 (script-fu-register "script-fu-loop-frames"
-		    _"_Loop Frames in Animation..."
-		    "Deletes every given frame of the animation"
-		    "Argel Arias"
-		    "2012 at HackerGarage"
-		    "Oct 5 2012"
-		    "RGB* GRAY*"
-		    SF-IMAGE       "The image"	    		0
-		    SF-DRAWABLE    "The layer"    			0
-		    SF-TOGGLE     _"Work on copy"       FALSE
-)
+	_"_Loop Frames in Animation..."
+	"Deletes every given frame of the animation"
+	"Argel Arias"
+	"2012 at HackerGarage"
+	"Oct 5 2012"
+	"RGB* GRAY*"
+	SF-IMAGE       "The image"	    		0
+	SF-DRAWABLE    "The layer"    			0
+	SF-TOGGLE     _"Work on copy"       FALSE
+	)
 
 ;Register function on menu structure
 (script-fu-menu-register "script-fu-loop-frames"
-			 _"<Image>/Filters/Animation")
+	_"<Image>/Filters/Animation")
