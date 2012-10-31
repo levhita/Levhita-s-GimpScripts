@@ -42,6 +42,12 @@
 	(layerList 0)
 	(number_of_layers 0)
 	(counter 0)
+	(theMethod
+			(cond
+			(( equal? inMethod 0 ) "(replace)")		
+			(( equal? inMethod 1 ) "(combine)")
+			)
+		)
 	)
 
 (set! theImage (if (= inCopy TRUE)
@@ -61,22 +67,15 @@
 
 		(while (>= layerId 0) ; scan through all the layers
 			(begin
-				(if (= inMethod TRUE)
-					(gimp-drawable-set-name (aref layerList layerId)
-						(string-append
-							inBaseName (number->string counter)
-							"(" (number->string inDelay) "ms)"
-							"(replace)"
-							);Set the layer name
-						)
-					(gimp-drawable-set-name (aref layerList layerId)
-						(string-append
-							inBaseName (number->string counter)
-							"(" (number->string inDelay) "ms)"
-							"(combine)"
-							);Set the layer name
-						)
+				(gimp-drawable-set-name (aref layerList layerId)
+					(string-append
+						inBaseName (number->string counter)
+						"(" (number->string inDelay) "ms)"
+						theMethod
+						);Set the layer name
 					)
+
+					
 		    	(set! layerId (- layerId 1))
 		    	(set! counter (+ counter 1))         ; decrement to the next
 		    	)
@@ -111,10 +110,9 @@
 	SF-DRAWABLE    "The layer"			0
 	SF-STRING      "Prefix for the Layer's name"	"frame_"
 	SF-ADJUSTMENT _"Default Delay"  '(100 1 1000 1 10 0 1)
-	SF-TOGGLE     _"Use Replace as Animation method"	TRUE		    
-	SF-TOGGLE     _"Work on copy"	FALSE
-
-	)
+	SF-OPTION "Animation Method" '("Replace" "Combine") 
+    SF-TOGGLE     _"Work on copy"	FALSE
+    )
 
 ;Register function on menu structure
 (script-fu-menu-register "script-fu-rename-layers"
