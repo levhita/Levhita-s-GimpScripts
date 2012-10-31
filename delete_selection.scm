@@ -58,8 +58,9 @@
 		    	(if (and (= TRUE inOnlyVisible) (= FALSE (car (gimp-drawable-get-visible currentLayer))))
 					()
 					(begin
+		    			(gimp-layer-add-alpha currentLayer)
 		    			(gimp-edit-clear currentLayer)
-		    			)
+						)
 					)
 		    	(set! layerId (- layerId 1))
 				)

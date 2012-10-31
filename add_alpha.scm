@@ -24,7 +24,6 @@
 ; 
 
 ; Define the function:
-
 (define (script-fu-add-alpha	inImage
 	inLayer
 	inOnlyVisible
@@ -37,7 +36,6 @@
 	(currentLayer 0)
 	(number_of_layers 0)
 	)
-
 (set! theImage (if (= inCopy TRUE)
 	(car (gimp-image-duplicate inImage))
 	inImage)
@@ -51,8 +49,7 @@
 		
 		(set! layerList (cadr (gimp-image-get-layers theImage)))
 		(set! number_of_layers (vector-length layerList))
-		(set! layerId (- number_of_layers 1))
-		(while (>= layerId 0); scan through all the layers
+		(while (< layerId number_of_layers); scan through all the layers
 			(begin           
 		    	(set! currentLayer (aref layerList layerId))
 		    	(if (and (= TRUE inOnlyVisible) (= FALSE (car (gimp-drawable-get-visible currentLayer))))
@@ -66,15 +63,16 @@
 		    )
 
 		;Final Cleanup
-		(if 	(= inCopy TRUE)
-			(begin 	(gimp-image-clean-all theImage)
+		(if (= inCopy TRUE)
+			(begin 
+				(gimp-image-clean-all theImage)
 				(gimp-display-new theImage)
 				)
 			()
 			)
 		
 		;Ends the undo queque
-		(if 	(= inCopy FALSE)	
+		(if (= inCopy FALSE)	
 			(gimp-undo-push-group-end theImage)	
 			()
 			)
