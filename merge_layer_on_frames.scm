@@ -100,7 +100,7 @@
 			()
 			)
 		
-		;Ends the undo queque
+		;Ends the undo queue
 		(if 	(= inCopy FALSE)	
 			(gimp-undo-push-group-end theImage)	
 			()

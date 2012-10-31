@@ -1,8 +1,7 @@
 ;
-; Rename Layers to Animation
+; Delete The Selection From All Frames
 ;
-; Takes all the layers of the image and rename them to animation friendly format
-; soo edition is simplified to just edit the text
+; Takes all the frames of the image and deletes the current selection
 ;
 ; Argel Arias (levhita@gmail.com)
 ; http://blog.levhita.net
@@ -26,22 +25,17 @@
 
 ; Define the function:
 
-(define (script-fu-rename-layers	inImage
+(define (script-fu-delete-selection	inImage
 	inLayer
-	inBaseName
-	inDelay
-	inMethod
+	inOnlyVisible
 	inCopy
 	)
 (let* (
 	(theImage 0)
-	(theBaseName 0)
-	(theDelay 0)
-	(theMethod 0)
 	(layerId 0)
 	(layerList 0)
+	(currentLayer 0)
 	(number_of_layers 0)
-	(counter 0)
 	)
 
 (set! theImage (if (= inCopy TRUE)
@@ -54,33 +48,22 @@
 			(gimp-undo-push-group-start theImage)	
 			()
 			)
-
+		
 		(set! layerList (cadr (gimp-image-get-layers theImage)))
 		(set! number_of_layers (vector-length layerList))
 		(set! layerId (- number_of_layers 1))
-
-		(while (>= layerId 0) ; scan through all the layers
-			(begin
-				(if (= inMethod TRUE)
-					(gimp-drawable-set-name (aref layerList layerId)
-						(string-append
-							inBaseName (number->string counter)
-							"(" (number->string inDelay) "ms)"
-							"(replace)"
-							);Set the layer name
-						)
-					(gimp-drawable-set-name (aref layerList layerId)
-						(string-append
-							inBaseName (number->string counter)
-							"(" (number->string inDelay) "ms)"
-							"(combine)"
-							);Set the layer name
-						)
+		(while (>= layerId 0); scan through all the layers
+			(begin           
+		    	(set! currentLayer (aref layerList layerId))
+		    	(if (and (= TRUE inOnlyVisible) (= FALSE (car (gimp-drawable-get-visible currentLayer))))
+					()
+					(begin
+		    			(gimp-edit-clear currentLayer)
+		    			)
 					)
 		    	(set! layerId (- layerId 1))
-		    	(set! counter (+ counter 1))         ; decrement to the next
-		    	)
-			)
+				)
+		    )
 
 		;Final Cleanup
 		(if 	(= inCopy TRUE)
@@ -100,22 +83,19 @@
 )
 
 ;Register function on Gimp
-(script-fu-register "script-fu-rename-layers"
-	_"_Rename Layers to Animation style..."
-	"Takes all the layers of the image and rename them to animation friendly format soo edition is simplified to just edit the text"
+(script-fu-register "script-fu-delete-selection"
+	_"_Delete The Selection From All Frames..."
+	"Takes all the frames of the image and deletes the current selection"
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
 	"RGB* GRAY*"
 	SF-IMAGE       "The image"			0
 	SF-DRAWABLE    "The layer"			0
-	SF-STRING      "Prefix for the Layer's name"	"frame_"
-	SF-ADJUSTMENT _"Default Delay"  '(100 1 1000 1 10 0 1)
-	SF-TOGGLE     _"Use Replace as Animation method"	TRUE		    
+	SF-TOGGLE     _"Delete only in visible layers"	TRUE
 	SF-TOGGLE     _"Work on copy"	FALSE
-
 	)
 
 ;Register function on menu structure
-(script-fu-menu-register "script-fu-rename-layers"
+(script-fu-menu-register "script-fu-delete-selection"
 	_"<Image>/Levhita")
