@@ -131,7 +131,7 @@
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
-	"RGB* GRAY*"
+	"RGB* GRAY* INDEXED*"
 	SF-IMAGE       "The Image"			0
 	SF-DRAWABLE    "The Layer"			0
 	SF-TOGGLE     _"Merge only with visible layers"	TRUE

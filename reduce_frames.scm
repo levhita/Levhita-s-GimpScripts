@@ -36,7 +36,7 @@
 	(theMethod 0)
 	(layerId 0)
 	(layerList 0)
-	(number_of_layers 0)
+	(numberOfLayers 0)
 	)
 
 (set! theImage (if (= inCopy TRUE)
@@ -51,10 +51,10 @@
 			)
 		
 		(set! layerList (cadr (gimp-image-get-layers theImage)))
-		(set! number_of_layers (vector-length layerList))
+		(set! numberOfLayers (vector-length layerList))
 		(set! layerId 0)
 
-		(while (< layerId number_of_layers) ; scan through all the layers
+		(while (< layerId numberOfLayers) ; scan through all the layers
 			(begin   
 				(if (= inOdd FALSE)
 					
@@ -95,7 +95,7 @@
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
-	"RGB* GRAY*"
+	"RGB* GRAY* INDEXED*"
 	SF-IMAGE       "The image"	    		0
 	SF-DRAWABLE    "The layer"    			0
 	SF-TOGGLE     _"Delete Odd Frames"	TRUE

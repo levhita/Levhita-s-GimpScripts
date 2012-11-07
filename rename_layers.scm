@@ -105,7 +105,7 @@
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
-	"RGB* GRAY*"
+	"RGB* GRAY* INDEXED*"
 	SF-IMAGE       "The image"			0
 	SF-DRAWABLE    "The layer"			0
 	SF-STRING      "Prefix for the Layer's name"	"frame_"

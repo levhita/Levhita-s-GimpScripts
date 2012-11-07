@@ -35,52 +35,52 @@
 	(layerId 0)
 	(layerList 0)
 	(currentLayer 0)
-	(number_of_layers 0)
+	(numberOfLayers 0)
 	)
 
-(set! theImage (if (= inCopy TRUE)
-	(car (gimp-image-duplicate inImage))
-	inImage)
-)
-
-		;Starts the undo queque
-		(if 	(= inCopy FALSE)	
-			(gimp-undo-push-group-start theImage)	
-			()
-			)
-		
-		(set! layerList (cadr (gimp-image-get-layers theImage)))
-		(set! number_of_layers (vector-length layerList))
-		(set! layerId (- number_of_layers 1))
-		(while (>= layerId 0); scan through all the layers
-			(begin           
-		    	(set! currentLayer (aref layerList layerId))
-		    	(if (and (= TRUE inOnlyVisible) (= FALSE (car (gimp-drawable-get-visible currentLayer))))
-					()
-					(begin
-		    			(gimp-layer-add-alpha currentLayer)
-		    			(gimp-edit-clear currentLayer)
-						)
-					)
-		    	(set! layerId (- layerId 1))
-				)
-		    )
-
-		;Final Cleanup
-		(if 	(= inCopy TRUE)
-			(begin 	(gimp-image-clean-all theImage)
-				(gimp-display-new theImage)
-				)
-			()
-			)
-		
-		;Ends the undo queque
-		(if 	(= inCopy FALSE)	
-			(gimp-undo-push-group-end theImage)	
-			()
-			)
-		(gimp-displays-flush)
+	(set! theImage (if (= inCopy TRUE)
+		(car (gimp-image-duplicate inImage))
+		inImage)
 		)
+
+	;Starts the undo queque
+	(if 	(= inCopy FALSE)	
+		(gimp-undo-push-group-start theImage)	
+		()
+		)
+		
+	(set! layerList (cadr (gimp-image-get-layers theImage)))
+	(set! numberOfLayers (vector-length layerList))
+	(while (< layerId numberOfLayers); scan through all the layers
+		(begin           
+	    	(set! currentLayer (aref layerList layerId))
+	    	(if (and (= TRUE inOnlyVisible) (= FALSE (car (gimp-drawable-get-visible currentLayer))))
+				()
+				(begin
+	    			(gimp-layer-add-alpha currentLayer)
+	    			(gimp-edit-clear currentLayer)
+					)
+				)
+	    	(set! layerId (+ layerId 1))
+			)
+	    )
+
+	;Final Cleanup
+	(if 	(= inCopy TRUE)
+		(begin 	(gimp-image-clean-all theImage)
+			(gimp-display-new theImage)
+			)
+		()
+		)
+		
+	;Ends the undo queque
+	(if 	(= inCopy FALSE)	
+		(gimp-undo-push-group-end theImage)	
+		()
+		)
+	
+	(gimp-displays-flush)
+	)
 )
 
 ;Register function on Gimp
@@ -90,7 +90,7 @@
 	"Argel Arias"
 	"2012 at HackerGarage"
 	"Oct 5 2012"
-	"RGB* GRAY*"
+	"RGB* GRAY* INDEXED*"
 	SF-IMAGE       "The image"			0
 	SF-DRAWABLE    "The layer"			0
 	SF-TOGGLE     _"Delete only in visible layers"	TRUE
